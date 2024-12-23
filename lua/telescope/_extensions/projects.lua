@@ -62,7 +62,7 @@ end
 local function delete_buffers()
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(bufnr) then
-      vim.api.nvim_buf_delete(bufnr, { force = false })
+      vim.api.nvim_buf_delete(bufnr, { force = config.options.force_chdir })
     end
   end
 end

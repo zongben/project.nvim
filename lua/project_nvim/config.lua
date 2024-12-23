@@ -40,6 +40,9 @@ M.defaults = {
   -- Path where project.nvim will store the project history for use in
   -- telescope
   datapath = vim.fn.stdpath("data"),
+
+  -- When set to false, you will get a confirmation message that asks you if you want to delete the buffers.
+  force_chdir = false,
 }
 
 ---@type ProjectOptions
