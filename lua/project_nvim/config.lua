@@ -46,7 +46,7 @@ M.defaults = {
 }
 
 ---@type ProjectOptions
-M.options = {}
+M.options = nil or {}
 
 M.setup = function(options)
   M.options = vim.tbl_deep_extend("force", M.defaults, options or {})
