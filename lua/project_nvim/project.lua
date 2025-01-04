@@ -1,7 +1,7 @@
 local config = require("project_nvim.config")
 local history = require("project_nvim.utils.history")
 local glob = require("project_nvim.utils.globtopattern")
-local path = require("project_nvim.utils.path")
+local _path = require("project_nvim.utils.path")
 local uv = vim.loop
 local M = {}
 
@@ -12,8 +12,8 @@ M.last_project = nil
 function M.find_lsp_root()
   -- Get lsp client for current buffer
   -- Returns nil or string
-  local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-  local clients = vim.lsp.buf_get_clients()
+  local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
+  local clients = vim.lsp.get_clients({ bufnr = 0})
   if next(clients) == nil then
     return nil
   end
@@ -160,7 +160,9 @@ function M.attach_to_lsp()
       local _on_attach = lsp_config.on_attach
       lsp_config.on_attach = function(client, bufnr)
         on_attach_lsp(client, bufnr)
-        _on_attach(client, bufnr)
+        if _on_attach ~= nil then
+          _on_attach(client, bufnr)
+        end
       end
     end
     return _start_client(lsp_config)
@@ -214,7 +216,7 @@ function M.get_project_root()
 end
 
 function M.is_file()
-  local buf_type = vim.api.nvim_buf_get_option(0, "buftype")
+  local buf_type = vim.api.nvim_get_option_value("filetype", { buf = 0 })
 
   local whitelisted_buf_type = { "", "acwrite" }
   local is_in_whitelist = false
@@ -241,7 +243,7 @@ function M.on_buf_enter()
   end
 
   local current_dir = vim.fn.expand("%:p:h", true)
-  if not path.exists(current_dir) or path.is_excluded(current_dir) then
+  if not _path.exists(current_dir) or _path.is_excluded(current_dir) then
     return
   end
 
